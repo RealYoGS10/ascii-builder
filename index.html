@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCII Website Builder</title>
+<style>
+    body {
+        background-color: black;
+        color: lime;
+        font-family: monospace;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    textarea {
+        width: 80%;
+        height: 120px;
+        font-family: monospace;
+        font-size: 16px;
+        margin-bottom: 10px;
+        background-color: #111;
+        color: lime;
+        border: 2px solid lime;
+        padding: 10px;
+    }
+    pre {
+        background-color: #111;
+        padding: 20px;
+        width: 80%;
+        overflow-x: auto;
+        min-height: 200px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    label {
+        margin: 5px;
+    }
+    button {
+        margin: 5px;
+        padding: 10px 20px;
+        font-family: monospace;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: lime;
+        color: black;
+        border: none;
+        border-radius: 5px;
+    }
+</style>
+</head>
+<body>
+
+<h1>ASCII Website Builder</h1>
+
+<textarea id="textInput" placeholder="Type your text here..."></textarea>
+
+<div>
+    <label>Font Size: <input type="number" id="fontSize" value="16" min="8" max="72"></label>
+    <label>Text Color: <input type="color" id="textColor" value="#00ff00"></label>
+    <label>Background Color: <input type="color" id="bgColor" value="#000000"></label>
+</div>
+
+<div>
+    <button id="downloadBtn">Download as Text</button>
+    <button id="copyBtn">Copy to Clipboard</button>
+    <button id="bannerBtn">Insert Banner</button>
+</div>
+
+<pre id="asciiOutput"></pre>
+
+<script>
+const textInput = document.getElementById('textInput');
+const asciiOutput = document.getElementById('asciiOutput');
+const fontSizeInput = document.getElementById('fontSize');
+const textColorInput = document.getElementById('textColor');
+const bgColorInput = document.getElementById('bgColor');
+const downloadBtn = document.getElementById('downloadBtn');
+const copyBtn = document.getElementById('copyBtn');
+const bannerBtn = document.getElementById('bannerBtn');
+
+// Update ASCII preview
+function updateASCII() {
+    asciiOutput.textContent = textInput.value;
+    asciiOutput.style.fontSize = fontSizeInput.value + "px";
+    asciiOutput.style.color = textColorInput.value;
+    asciiOutput.style.backgroundColor = bgColorInput.value;
+}
+
+textInput.addEventListener('input', updateASCII);
+fontSizeInput.addEventListener('input', updateASCII);
+textColorInput.addEventListener('input', updateASCII);
+bgColorInput.addEventListener('input', updateASCII);
+
+// Download as .txt
+downloadBtn.addEventListener('click', () => {
+    const blob = new Blob([textInput.value], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ascii.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+// Copy to clipboard
+copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(textInput.value).then(() => {
+        alert("Copied to clipboard!");
+    });
+});
+
+// Insert pre-made ASCII banner
+bannerBtn.addEventListener('click', () => {
+    const banner = `
+  ___    ___   __ _  _ __ ___ 
+ / __|  / _ \\ / _\` || '_ \` _ \\
+ \\__ \\ |  __/| (_| || | | | | |
+ |___/  \\___| \\__,_||_| |_| |_|
+`;
+    textInput.value += banner;
+    updateASCII();
+});
+
+// Initialize
+updateASCII();
+</script>
+
+</body>
+</html>
